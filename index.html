@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L'amante — Thư Viện Truyện Edit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --iris: #5A4FCF;
+      --sapphire: #3E62AD;
+      --lavender: #5A5B9F;
+      --bg-paper: #F8F7FC;
+    }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: var(--bg-paper);
+      background-image: 
+        linear-gradient(to right, rgba(90, 91, 159, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(90, 91, 159, 0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: #232238;
+    }
+    .font-serif-title {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .font-reader {
+      font-family: 'Lora', serif;
+    }
+    .brand-gradient {
+      background: linear-gradient(135deg, #5A4FCF 0%, #3E62AD 100%);
+    }
+    .brand-border {
+      border-color: rgba(90, 91, 159, 0.25);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(90, 91, 159, 0.22);
+      box-shadow: 0 8px 30px rgba(90, 79, 207, 0.06);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- THANH ĐIỀU HƯỚNG -->
+  <header class="sticky top-0 z-30 glass-card border-b brand-border">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <button onclick="showHome()" class="flex items-center gap-2.5 text-left group">
+        <span class="w-9 h-9 rounded-full brand-gradient text-white flex items-center justify-center font-serif-title text-xl italic shadow-sm">L</span>
+        <div>
+          <h1 class="font-serif-title text-2xl font-bold tracking-wide text-[#5A4FCF] group-hover:text-[#3E62AD] transition">L'amante</h1>
+          <p class="text-[11px] text-[#5A5B9F] tracking-widest uppercase -mt-1">Góc nhỏ lưu giữ những mảnh tình</p>
+        </div>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button onclick="pickRandomStory()" class="px-3.5 py-1.5 rounded-full text-xs font-medium border border-[#5A5B9F]/30 text-[#5A4FCF] hover:bg-[#5A4FCF]/10 transition">
+          ✦ Gieo quẻ đọc truyện
+        </button>
+        <button id="btnEditorToggle" onclick="openEditorModal()" class="px-3.5 py-1.5 rounded-full text-xs font-medium brand-gradient text-white shadow-sm hover:opacity-90 transition">
+          Chế độ Editor
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-8">
+
+    <!-- BANNER GIỚI THIỆU -->
+    <section id="homeHero" class="glass-card rounded-2xl p-6 mb-8 relative overflow-hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-[#5A4FCF]/10 text-[#5A4FCF] mb-2">
+            ✧ Chào mừng đến với nhà của L'amante
+          </span>
+          <h2 class="font-serif-title text-3xl font-bold text-[#232238] mb-1">Kệ Sách Tuyển Chọn</h2>
+          <p class="text-sm text-[#5A5B9F] max-w-xl leading-relaxed">
+            Nơi cất giữ những bản dịch trau chuốt câu chữ, nhẹ nhàng như một tách trà chiều. Chúc bạn tìm được một câu chuyện vừa vặn với tâm trạng hôm nay.
+          </p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="filterStories('ALL')" class="filter-btn active px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#5A4FCF] text-white" data-filter="ALL">Tất cả</button>
+          <button onclick="filterStories('Đang tiến hành')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-white border border-[#5A5B9F]/30 text-[#5A5B9F]" data-filter="Đang tiến hành">Đang tiến hành</button>
+          <button onclick="filterStories('Hoàn thành')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-white border border-[#5A5B9F]/30 text-[#5A5B9F]" data-filter="Hoàn thành">Hoàn thành</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DANH SÁCH TRUYỆN -->
+    <section id="storyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="col-span-full text-center py-12 text-[#5A5B9F] text-sm">Đang tải kệ sách của L'amante...</div>
+    </section>
+
+    <!-- CHI TIẾT TRUYỆN & DANH SÁCH CHƯƠNG -->
+    <section id="storyDetail" class="hidden glass-card rounded-2xl p-6 md:p-8">
+      <button onclick="showHome()" class="text-xs font-medium text-[#3E62AD] hover:underline mb-5 inline-flex items-center gap-1">
+        ← Quay lại kệ sách
+      </button>
+      <div id="storyDetailContent"></div>
+    </section>
+
+    <!-- TRÌNH ĐỌC CHƯƠNG -->
+    <section id="chapterReader" class="hidden glass-card rounded-2xl p-6 md:p-10 max-w-3xl mx-auto">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b brand-border">
+        <button id="btnBackToStory" class="text-xs font-medium text-[#3E62AD] hover:underline">← Mục lục truyện</button>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-[#5A5B9F]">Cỡ chữ:</span>
+          <button onclick="changeFontSize(-1)" class="w-7 h-7 rounded-lg border brand-border hover:bg-[#5A4FCF]/10">A-</button>
+          <button onclick="changeFontSize(1)" class="w-7 h-7 rounded-lg border brand-border hover:bg-[#5A4FCF]/10">A+</button>
+          <button onclick="toggleSepia()" class="px-2.5 h-7 rounded-lg border brand-border hover:bg-[#5A4FCF]/10">Nền giấy</button>
+        </div>
+      </div>
+      <div id="chapterBody"></div>
+    </section>
+
+  </main>
+
+  <!-- CHÂN TRANG -->
+  <footer class="border-t brand-border py-6 text-center text-xs text-[#5A5B9F]">
+    <p class="font-serif-title italic text-base text-[#5A4FCF] mb-1">L'amante</p>
+    <p>Bản dịch phi thương mại phục vụ sở thích cá nhân • Vui lòng không re-up</p>
+  </footer>
+
+  <!-- MODAL ĐĂNG NHẬP & QUẢN TRỊ EDITOR -->
+  <div id="editorModal" class="hidden fixed inset-0 z-50 bg-[#181729]/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border brand-border max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 mb-5 border-b brand-border">
+        <h3 class="font-serif-title text-2xl font-bold text-[#5A4FCF]">Không Gian Editor — L'amante</h3>
+        <button onclick="closeEditorModal()" class="text-[#5A5B9F] hover:text-black text-lg">✕</button>
+      </div>
+
+      <!-- FORM ĐĂNG NHẬP -->
+      <form id="loginForm" onsubmit="handleEditorLogin(event)" class="space-y-4">
+        <p class="text-xs text-[#5A5B9F]">Đăng nhập bằng tài khoản Editor đã tạo trên Supabase để thêm truyện và đăng chương mới.</p>
+        <div>
+          <label class="block text-xs font-medium text-[#232238] mb-1">Email Editor</label>
+          <input type="email" id="editorEmail" required class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm focus:outline-none focus:border-[#5A4FCF]" placeholder="editor@lamante.vn">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[#232238] mb-1">Mật khẩu</label>
+          <input type="password" id="editorPassword" required class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm focus:outline-none focus:border-[#5A4FCF]" placeholder="••••••••">
+        </div>
+        <p id="loginError" class="text-xs text-red-600 hidden"></p>
+        <button type="submit" class="w-full py-2.5 rounded-xl brand-gradient text-white text-sm font-medium shadow">Đăng nhập mở khóa</button>
+      </form>
+
+      <!-- BẢNG ĐIỀU KHIỂN SAU KHI ĐĂNG NHẬP -->
+      <div id="editorDashboard" class="hidden space-y-6">
+        <div class="flex items-center justify-between bg-[#5A4FCF]/5 p-3 rounded-xl">
+          <span class="text-xs text-[#3E62AD] font-medium" id="loggedEditorEmail">Đã đăng nhập</span>
+          <button onclick="handleEditorLogout()" class="text-xs text-red-600 hover:underline">Đăng xuất</button>
+        </div>
+
+        <!-- TAB CHUYỂN ĐỔI -->
+        <div class="flex gap-2 border-b brand-border pb-3">
+          <button onclick="switchEditorTab('newStory')" id="tabNewStory" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#5A4FCF] text-white">+ Thêm truyện mới</button>
+          <button onclick="switchEditorTab('newChapter')" id="tabNewChapter" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-[#5A5B9F]">+ Đăng chương mới</button>
+        </div>
+
+        <!-- FORM THÊM TRUYỆN -->
+        <form id="formNewStory" onsubmit="createStory(event)" class="space-y-3">
+          <input type="text" id="stTitle" required placeholder="Tên truyện *" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input type="text" id="stAuthor" placeholder="Tác giả (VD: Nguyệt Khiển Quyển)" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm">
+            <input type="text" id="stEditor" value="L'amante" placeholder="Editor" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input type="url" id="stCover" placeholder="Link ảnh bìa (https://...)" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm">
+            <select id="stStatus" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm bg-white">
+              <option value="Đang tiến hành">Đang tiến hành</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+            </select>
+          </div>
+          <input type="text" id="stGenres" placeholder="Thể loại cách nhau dấu phẩy (VD: Hiện đại, Ngọt sủng, HE)" class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm">
+          <textarea id="stSynopsis" rows="3" placeholder="Văn án / Giới thiệu truyện..." class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm"></textarea>
+          <button type="submit" class="w-full py-2.5 rounded-xl brand-gradient text-white text-sm font-medium">Lưu truyện lên kệ</button>
+        </form>
+
+        <!-- FORM ĐĂNG CHƯƠNG -->
+        <form id="formNewChapter" onsubmit="createChapter(event)" class="hidden space-y-3">
+          <select id="chStorySelect" required class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm bg-white">
+            <option value="">-- Chọn truyện để đăng chương --</option>
+          </select>
+          <div class="grid grid-cols-3 gap-3">
+            <input type="number" id="chNumber" required min="1" placeholder="Số chương (VD: 1)" class="col-span-1 px-3.5 py-2 rounded-xl border brand-border text-sm">
+            <input type="text" id="chTitle" required placeholder="Tên chương (VD: Gặp lại)" class="col-span-2 px-3.5 py-2 rounded-xl border brand-border text-sm">
+          </div>
+          <textarea id="chContent" rows="8" required placeholder="Dán toàn bộ nội dung chương vào đây..." class="w-full px-3.5 py-2 rounded-xl border brand-border text-sm font-reader"></textarea>
+          <button type="submit" class="w-full py-2.5 rounded-xl brand-gradient text-white text-sm font-medium">Xuất bản chương này</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // THAY 2 THÔNG TIN CỦA BẠN TỪ SUPABASE VÀO ĐÂY:
+    const SUPABASE_URL = "https://edvxevaqtrsdxlmonyyb.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_EP0jtmCLN9wvRSr9q5WFvg_gtq1u3Zi";
+    // ============================================================
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let allStories = [];
+    let currentFilter = 'ALL';
+    let readerFontSize = 18;
+    let isSepia = false;
+
+    async function init() {
+      await loadStories();
+      checkAuthSession();
+    }
+
+    async function loadStories() {
+      const { data, error } = await sb.from('stories').select('*').order('created_at', { ascending: false });
+      const grid = document.getElementById('storyGrid');
+      if (error) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-red-500 text-sm">Chưa kết nối được Supabase. Hãy kiểm tra lại URL và Key trong file index.html!</div>`;
+        return;
+      }
+      allStories = data || [];
+      renderStoryGrid();
+      populateStorySelect();
+    }
+
+    function renderStoryGrid() {
+      const grid = document.getElementById('storyGrid');
+      const filtered = currentFilter === 'ALL' ? allStories : allStories.filter(s => s.status === currentFilter);
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full glass-card rounded-2xl p-10 text-center text-[#5A5B9F] text-sm">Kệ sách chưa có truyện nào. Bấm <b>Chế độ Editor</b> ở góc trên để đăng bộ truyện đầu tiên cho L'amante nhé!</div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map(story => {
+        const cover = story.cover_url || 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80';
+        const genres = Array.isArray(story.genres) ? story.genres : [];
+        return `
+          <article onclick="openStory('${story.id}')" class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 transition duration-200 flex flex-col">
+            <div class="h-52 overflow-hidden relative bg-[#5A5B9F]/10">
+              <img src="${cover}" alt="${story.title}" class="w-full h-full object-cover">
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-medium bg-white/90 text-[#5A4FCF] shadow-sm">
+                ${story.status || 'Đang tiến hành'}
+              </span>
+            </div>
+            <div class="p-5 flex-1 flex flex-col">
+              <h3 class="font-serif-title text-xl font-bold text-[#232238] line-clamp-1 mb-1">${story.title}</h3>
+              <p class="text-xs text-[#3E62AD] mb-2">Tác giả: ${story.author || 'Đang cập nhật'} • Edit: ${story.editor || "L'amante"}</p>
+              <p class="text-xs text-[#5A5B9F] line-clamp-2 mb-3 flex-1">${story.synopsis || 'Chưa có văn án...'}</p>
+              <div class="flex flex-wrap gap-1.5">
+                ${genres.slice(0, 3).map(g => `<span class="px-2 py-0.5 rounded-md text-[10px] bg-[#5A4FCF]/10 text-[#5A4FCF]">${g}</span>`).join('')}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function filterStories(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.filter === status) {
+          btn.className = 'filter-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#5A4FCF] text-white';
+        } else {
+          btn.className = 'filter-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-white border border-[#5A5B9F]/30 text-[#5A5B9F]';
+        }
+      });
+      renderStoryGrid();
+    }
+
+    async function openStory(storyId) {
+      const story = allStories.find(s => s.id === storyId);
+      if (!story) return;
+
+      document.getElementById('homeHero').classList.add('hidden');
+      document.getElementById('storyGrid').classList.add('hidden');
+      document.getElementById('chapterReader').classList.add('hidden');
+      document.getElementById('storyDetail').classList.remove('hidden');
+
+      const { data: chapters } = await sb.from('chapters').select('*').eq('story_id', storyId).order('chapter_number', { ascending: true });
+      const cover = story.cover_url || 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80';
+      const genres = Array.isArray(story.genres) ? story.genres : [];
+
+      document.getElementById('storyDetailContent').innerHTML = `
+        <div class="flex flex-col md:flex-row gap-6 pb-6 border-b brand-border">
+          <img src="${cover}" class="w-44 h-60 object-cover rounded-xl shadow-md mx-auto md:mx-0">
+          <div class="flex-1">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs bg-[#5A4FCF]/10 text-[#5A4FCF] mb-2">${story.status}</span>
+            <h2 class="font-serif-title text-3xl font-bold text-[#232238] mb-1">${story.title}</h2>
+            <p class="text-xs text-[#3E62AD] mb-3">Tác giả: ${story.author || 'Chưa rõ'} • Editor: ${story.editor || "L'amante"}</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              ${genres.map(g => `<span class="px-2.5 py-0.5 rounded-full text-xs bg-[#3E62AD]/10 text-[#3E62AD]">${g}</span>`).join('')}
+            </div>
+            <p class="text-sm text-[#232238]/85 leading-relaxed whitespace-pre-line">${story.synopsis || 'Đang cập nhật văn án...'}</p>
+          </div>
+        </div>
+        <div class="mt-6">
+          <h4 class="font-serif-title text-xl font-bold text-[#5A4FCF] mb-3">Mục Lục (${(chapters || []).length} chương)</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            ${(chapters && chapters.length > 0) ? chapters.map(ch => `
+              <button onclick="openChapter('${ch.id}', '${story.id}')" class="text-left p-3 rounded-xl border brand-border hover:bg-[#5A4FCF]/5 transition flex items-center justify-between">
+                <span class="text-sm font-medium text-[#232238]">Chương ${ch.chapter_number}: ${ch.title}</span>
+                <span class="text-xs text-[#3E62AD]">Đọc →</span>
+              </button>
+            `).join('') : '<p class="text-xs text-[#5A5B9F]">Chưa có chương nào được đăng.</p>'}
+          </div>
+        </div>
+      `;
+    }
+
+    async function openChapter(chapterId, storyId) {
+      const { data: chapter } = await sb.from('chapters').select('*').eq('id', chapterId).single();
+      const { data: allCh } = await sb.from('chapters').select('id, chapter_number').eq('story_id', storyId).order('chapter_number', { ascending: true });
+      if (!chapter) return;
+
+      document.getElementById('storyDetail').classList.add('hidden');
+      document.getElementById('chapterReader').classList.remove('hidden');
+      document.getElementById('btnBackToStory').onclick = () => openStory(storyId);
+
+      const idx = (allCh || []).findIndex(c => c.id === chapterId);
+      const prevCh = idx > 0 ? allCh[idx - 1] : null;
+      const nextCh = (allCh && idx < allCh.length - 1) ? allCh[idx + 1] : null;
+
+      const paragraphs = chapter.content.split('\n').filter(p => p.trim() !== '').map(p => `<p class="mb-4">${p}</p>`).join('');
+
+      document.getElementById('chapterBody').innerHTML = `
+        <div class="text-center mb-8">
+          <p class="text-xs uppercase tracking-widest text-[#3E62AD] mb-1">Chương ${chapter.chapter_number}</p>
+          <h2 class="font-serif-title text-3xl font-bold text-[#232238]">${chapter.title}</h2>
+        </div>
+        <div id="readerText" class="font-reader leading-loose text-[#232238]" style="font-size: ${readerFontSize}px;">
+          ${paragraphs}
+        </div>
+        <div class="mt-10 pt-6 border-t brand-border flex items-center justify-between">
+          ${prevCh ? `<button onclick="openChapter('${prevCh.id}', '${storyId}')" class="px-4 py-2 rounded-full text-xs font-medium border brand-border text-[#5A4FCF] hover:bg-[#5A4FCF]/10">← Chương trước</button>` : '<span></span>'}
+          ${nextCh ? `<button onclick="openChapter('${nextCh.id}', '${storyId}')" class="px-4 py-2 rounded-full text-xs font-medium brand-gradient text-white shadow">Chương tiếp →</button>` : '<span></span>'}
+        </div>
+      `;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function changeFontSize(delta) {
+      readerFontSize = Math.min(26, Math.max(14, readerFontSize + delta));
+      const el = document.getElementById('readerText');
+      if (el) el.style.fontSize = readerFontSize + 'px';
+    }
+
+    function toggleSepia() {
+      isSepia = !isSepia;
+      const box = document.getElementById('chapterReader');
+      box.style.backgroundColor = isSepia ? '#F5EFE2' : 'rgba(255, 255, 255, 0.92)';
+    }
+
+    function showHome() {
+      document.getElementById('homeHero').classList.remove('hidden');
+      document.getElementById('storyGrid').classList.remove('hidden');
+      document.getElementById('storyDetail').classList.add('hidden');
+      document.getElementById('chapterReader').classList.add('hidden');
+    }
+
+    function pickRandomStory() {
+      if (allStories.length === 0) return alert('Kệ sách hiện chưa có truyện để gieo quẻ!');
+      const rand = allStories[Math.floor(Math.random() * allStories.length)];
+      openStory(rand.id);
+    }
+
+    // --- XỬ LÝ CHẾ ĐỘ EDITOR ---
+    function openEditorModal() {
+      document.getElementById('editorModal').classList.remove('hidden');
+    }
+    function closeEditorModal() {
+      document.getElementById('editorModal').classList.add('hidden');
+    }
+
+    async function checkAuthSession() {
+      const { data: { session } } = await sb.auth.getSession();
+      updateEditorUI(session);
+    }
+
+    function updateEditorUI(session) {
+      const loginForm = document.getElementById('loginForm');
+      const dashboard = document.getElementById('editorDashboard');
+      const btn = document.getElementById('btnEditorToggle');
+      if (session) {
+        loginForm.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        document.getElementById('loggedEditorEmail').textContent = `Editor: ${session.user.email}`;
+        btn.textContent = '✦ Quản lý truyện';
+      } else {
+        loginForm.classList.remove('hidden');
+        dashboard.classList.add('hidden');
+        btn.textContent = 'Chế độ Editor';
+      }
+    }
+
+    async function handleEditorLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('editorEmail').value;
+      const password = document.getElementById('editorPassword').value;
+      const errEl = document.getElementById('loginError');
+      errEl.classList.add('hidden');
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        errEl.textContent = 'Sai email hoặc mật khẩu Editor!';
+        errEl.classList.remove('hidden');
+      } else {
+        updateEditorUI(data.session);
+      }
+    }
+
+    async function handleEditorLogout() {
+      await sb.auth.signOut();
+      updateEditorUI(null);
+    }
+
+    function switchEditorTab(tab) {
+      const isStory = tab === 'newStory';
+      document.getElementById('formNewStory').classList.toggle('hidden', !isStory);
+      document.getElementById('formNewChapter').classList.toggle('hidden', isStory);
+      document.getElementById('tabNewStory').className = isStory ? 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#5A4FCF] text-white' : 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-[#5A5B9F]';
+      document.getElementById('tabNewChapter').className = !isStory ? 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#5A4FCF] text-white' : 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-[#5A5B9F]';
+    }
+
+    function populateStorySelect() {
+      const sel = document.getElementById('chStorySelect');
+      sel.innerHTML = '<option value="">-- Chọn truyện để đăng chương --</option>' +
+        allStories.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+    }
+
+    async function createStory(e) {
+      e.preventDefault();
+      const genresRaw = document.getElementById('stGenres').value;
+      const genres = genresRaw ? genresRaw.split(',').map(g => g.trim()).filter(Boolean) : [];
+      const payload = {
+        title: document.getElementById('stTitle').value,
+        author: document.getElementById('stAuthor').value,
+        editor: document.getElementById('stEditor').value || "L'amante",
+        cover_url: document.getElementById('stCover').value,
+        status: document.getElementById('stStatus').value,
+        genres,
+        synopsis: document.getElementById('stSynopsis').value
+      };
+      const { error } = await sb.from('stories').insert([payload]);
+      if (error) return alert('Lỗi lưu truyện: ' + error.message);
+      alert('Đã thêm truyện lên kệ L\'amante!');
+      e.target.reset();
+      await loadStories();
+    }
+
+    async function createChapter(e) {
+      e.preventDefault();
+      const payload = {
+        story_id: document.getElementById('chStorySelect').value,
+        chapter_number: parseInt(document.getElementById('chNumber').value, 10),
+        title: document.getElementById('chTitle').value,
+        content: document.getElementById('chContent').value
+      };
+      const { error } = await sb.from('chapters').insert([payload]);
+      if (error) return alert('Lỗi đăng chương: ' + error.message);
+      alert('Đã xuất bản chương mới thành công!');
+      document.getElementById('chNumber').value = '';
+      document.getElementById('chTitle').value = '';
+      document.getElementById('chContent').value = '';
+    }
+
+    init();
+  </script>
+</body>
+</html>
