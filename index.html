@@ -4,90 +4,121 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>l'amante</title>
+<script>try{var s=localStorage.getItem('lm_colorway');if(s)document.documentElement.setAttribute('data-colorway',s)}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500;1,600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Bodoni+Moda:ital,wght@1,500;1,700;1,900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500;1,600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--iris:#5A4FCF;--sap:#3E62AD;--lav:#5A5B9F;--gold:#B8913F;--ink:#232238;--paper:#F8F7FC;--card:#fff;--line:rgba(90,91,159,.25)}
-body.sepia{--paper:#F3EAD7;--card:#FBF5E6;--ink:#3A2F20;--lav:#7A6A55;--line:rgba(120,95,50,.28)}
-body.night{--paper:#14132A;--card:#1D1C3A;--ink:#E8E6F7;--lav:#A9A8E0;--iris:#9A92FF;--sap:#7DA2F0;--line:rgba(169,168,224,.28)}
+:root{--iris:#5A4FCF;--sap:#3E62AD;--gold:#B8913F;--glow:rgba(90,79,207,.2);--lav:#5A5B9F;--ink:#232238;--paper:#F8F7FC;--card:#fff;--line:rgba(90,91,159,.25)}
+[data-colorway=sapphire]{--iris:#3E62AD;--sap:#5A4FCF;--glow:rgba(62,98,173,.2)}
+[data-colorway=crimson]{--iris:#B3212F;--sap:#7A1420;--glow:rgba(179,33,47,.18)}
+[data-colorway=sage]{--iris:#5E8C6A;--sap:#3F6B4C;--glow:rgba(94,140,106,.2)}
+[data-colorway=gold]{--iris:#A9822F;--sap:#7A5C1C;--glow:rgba(184,145,63,.2)}
+body.paper{--paper:#F3EAD7;--card:#FBF5E6;--ink:#3A2F20;--lav:#7A6A55;--line:rgba(120,95,50,.28)}
 *{box-sizing:border-box;margin:0}
-body{font-family:'Be Vietnam Pro',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;transition:background .3s;background-image:radial-gradient(circle at 12% -8%,rgba(90,79,207,.16),transparent 42%),radial-gradient(circle at 95% 6%,rgba(184,145,63,.12),transparent 38%)}
+html{scroll-behavior:smooth}
+body{font-family:'Be Vietnam Pro',sans-serif;background-color:var(--paper);background-size:28px 28px;color:var(--ink);min-height:100vh;transition:background-color .5s,color .5s}
 .hide{display:none!important}
-.wrap{max-width:1080px;margin:0 auto;padding:0 18px;width:100%}
-main{flex:1;padding-bottom:40px}
-.ser{font-family:'Cormorant Garamond',serif}
-.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--paper) 82%,transparent);border-bottom:1px solid var(--line)}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;color:var(--iris)}
-.brand b{font:italic 700 28px 'Cormorant Garamond',serif}
-.seal{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#7d73ee,#5A4FCF 58%,#372e9c);color:#F4E3B1;display:grid;place-items:center;font-size:19px;box-shadow:0 2px 0 #2b247d,0 6px 14px rgba(90,79,207,.35)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;width:100%}
+.pt{padding-top:96px;padding-bottom:80px}
+.caps{font:500 11px 'Be Vietnam Pro',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--lav)}
+.top{position:fixed;top:0;left:0;right:0;z-index:30;background:linear-gradient(color-mix(in srgb,var(--paper) 90%,transparent),transparent)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;color:var(--ink)}
+.brand b{font:italic 600 26px 'Cormorant Garamond',serif}
+.seal{color:var(--iris);font-size:20px}
 .nav{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border:1px solid var(--line);background:transparent;color:var(--iris);border-radius:99px;padding:7px 14px;font:500 12px 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:.2s}
-.btn:hover{background:rgba(90,79,207,.12)}
-.btn.fill{background:linear-gradient(135deg,var(--iris),var(--sap));color:#fff;border:0}
-.btn:focus-visible,.in:focus-visible,.toc button:focus-visible,.book:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.hero{text-align:center;padding:58px 0 14px}
-.win{position:relative;width:min(400px,92%);margin:0 auto 34px;border:3px solid var(--iris);border-radius:999px 999px 6px 6px;padding:70px 18px 34px;background:linear-gradient(180deg,rgba(125,115,238,.24),rgba(62,98,173,.06));box-shadow:inset 0 0 0 8px var(--paper),inset 0 0 0 10px var(--line),0 24px 44px rgba(90,79,207,.16)}
-.win:after{content:"";position:absolute;left:-16px;right:-16px;bottom:-14px;height:11px;border-radius:3px;background:var(--iris)}
-.win small{font:italic 600 15px 'Cormorant Garamond',serif;color:var(--gold);letter-spacing:1px}
-.hero h2{font:italic 600 clamp(58px,13vw,92px)/.9 'Cormorant Garamond',serif;color:var(--iris);letter-spacing:-1px;margin:6px 0 10px}
-.fr{font:italic 500 18px 'Cormorant Garamond',serif;color:var(--lav)}
-.hero blockquote{font:italic 500 22px/1.4 'Cormorant Garamond',serif;color:var(--ink)}
-.hero cite{display:block;font:12px 'Be Vietnam Pro',sans-serif;font-style:normal;color:var(--lav);margin-top:6px}
-.orn{display:flex;align-items:center;gap:14px;justify-content:center;color:var(--gold);margin:20px auto;max-width:340px}
-.orn:before,.orn:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.orn:after{transform:scaleX(-1)}
-.hero p{max-width:480px;margin:auto;font-size:14px;line-height:1.85;color:var(--lav)}
-.tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end;margin-top:34px;border-bottom:2px solid var(--iris)}
-.tab{padding:9px 18px;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:transparent;color:var(--lav);font:500 13px 'Be Vietnam Pro',sans-serif;cursor:pointer}
-.tab.on{background:var(--iris);color:#fff;border-color:var(--iris);padding-bottom:12px}
-.tabs select{margin-left:auto;margin-bottom:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:12px 'Be Vietnam Pro'}
-.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:40px 28px;padding:34px 0 20px}
-.book{cursor:pointer;perspective:900px;background:none;border:0;text-align:left;color:inherit;font:inherit}
-.cov{position:relative;aspect-ratio:2/3;border-radius:3px 10px 10px 3px;overflow:hidden;background:linear-gradient(160deg,var(--sap),var(--iris));box-shadow:-5px 7px 0 -2px rgba(35,34,56,.14),0 18px 30px rgba(35,34,56,.22);transform-origin:left center;transition:transform .35s}
-.book:hover .cov{transform:rotateY(-16deg) translateY(-4px)}
+.btn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:8px 16px;font:500 12px 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:.25s}
+.btn:hover{border-color:var(--iris);color:var(--iris)}
+.btn.fill{background:var(--iris);color:#fff;border:0}
+.btn.fill:hover{color:#fff;filter:brightness(1.12)}
+.btn:focus-visible,.in:focus-visible,.toc button:focus-visible,.cat:focus-visible,.sw button:focus-visible{outline:2px solid var(--iris);outline-offset:3px}
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background-color:var(--paper);background:radial-gradient(ellipse at 72% 28%,var(--glow),transparent 60%),var(--paper)}
+.hero-img,.finale-img{position:absolute;left:0;top:0;right:0;bottom:0;background:center/cover no-repeat}
+.hero-img{background-image:url(https://i.ibb.co/BKrHwM7P/Chat-GPT-Image-22-16-23-24-thg-9-2026.png);opacity:.4;transform:scale(1.06);animation:slow 14s ease-out forwards}
+@keyframes slow{to{transform:scale(1)}}
+.hero:after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(248,247,252,.55),rgba(248,247,252,.1) 45%,var(--paper))}
+.hero-copy{position:relative;z-index:2;padding:0 clamp(20px,6vw,80px)}
+.hero h1{font:italic 600 clamp(84px,21vw,270px)/.82 'Cormorant Garamond',serif;letter-spacing:-.03em;margin:14px 0 24px;color:var(--ink)}
+.hero-lede{font:italic 500 clamp(22px,3vw,32px)/1.3 'Cormorant Garamond',serif;max-width:20ch}
+.hero-copy>*{opacity:0;animation:up 1.2s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-copy>:nth-child(1){animation-delay:.3s}.hero-copy>:nth-child(2){animation-delay:.6s}.hero-copy>:nth-child(3){animation-delay:1.2s}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.strip{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:20px clamp(20px,6vw,80px) 84px;display:flex;justify-content:space-between;gap:12px}
+@media(max-width:700px){.strip span:nth-child(2){display:none}}
+.pause{padding:clamp(90px,20vh,220px) clamp(20px,6vw,80px);text-align:center}
+.pause p{font:italic 500 clamp(28px,4.8vw,56px)/1.25 'Cormorant Garamond',serif;max-width:19ch;margin:0 auto}
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1.1s ease,transform 1.1s ease}
+.rv.in{opacity:1;transform:none}
+.cats{display:flex;gap:6px 24px;flex-wrap:wrap;align-items:baseline;padding:0 clamp(20px,6vw,80px);max-width:1280px;margin:0 auto}
+.cat{background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;color:var(--lav);font:500 11.5px 'Be Vietnam Pro',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+.cat.on{color:var(--iris);border-color:var(--iris)}
+.cats select{margin-left:auto;background:transparent;color:var(--lav);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font:12px 'Be Vietnam Pro',sans-serif}
+.cats select option{background:var(--card);color:var(--ink)}
+.scene{display:flex;align-items:center;justify-content:center;gap:clamp(28px,7vw,100px);padding:clamp(48px,10vh,120px) clamp(20px,6vw,80px);flex-wrap:wrap}
+.scene:nth-child(even){flex-direction:row-reverse}
+.scene figure{width:clamp(210px,26vw,300px);cursor:pointer;perspective:900px}
+.scene .cap{max-width:420px}
+.cap h3{font:italic 600 clamp(40px,6vw,70px)/1 'Cormorant Garamond',serif;margin:12px 0 8px}
+.by{color:var(--iris);font-size:13px;margin-bottom:14px}
+.blurb{font-size:14px;line-height:1.9;color:var(--lav);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:24px;white-space:pre-line}
+.empty{text-align:center;color:var(--lav);font-size:13px;padding:60px 0}
+.cov{position:relative;aspect-ratio:2/3;border-radius:3px 10px 10px 3px;overflow:hidden;background:linear-gradient(160deg,var(--sap),#1d1a4d);box-shadow:0 34px 60px -14px var(--glow),0 14px 26px rgba(0,0,0,.45);transform-origin:left center;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+figure:hover .cov{transform:rotateY(-18deg) translateY(-6px)}
 .cov img{width:100%;height:100%;object-fit:cover;display:block}
-.cov:before{content:"";position:absolute;left:0;top:0;bottom:0;width:11px;z-index:2;background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(255,255,255,.2) 60%,transparent)}
-.nocov{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px;text-align:center;color:#F4E3B1;font:italic 600 22px/1.2 'Cormorant Garamond',serif}
+.cov:before{content:"";position:absolute;left:0;top:0;bottom:0;width:11px;z-index:2;background:linear-gradient(90deg,rgba(0,0,0,.4),rgba(255,255,255,.2) 60%,transparent)}
+.cov:after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;z-index:2;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.16),transparent 42%)}
+.nocov{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px;text-align:center;color:#F4E3B1;font:italic 600 24px/1.2 'Cormorant Garamond',serif}
 .nocov span{font-size:30px}
-.tag{position:absolute;top:12px;right:0;background:var(--gold);color:#fff;font-size:10.5px;padding:3px 10px 3px 12px;border-radius:99px 0 0 99px;z-index:3}
-.book h3{font:700 19px/1.2 'Cormorant Garamond',serif;margin-top:14px}
-.book small{display:block;color:var(--lav);font-size:11.5px;margin-top:3px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:6px 22px 6px 22px;padding:clamp(18px,4vw,42px);margin-top:26px;box-shadow:0 12px 40px rgba(90,79,207,.09)}
-.back{display:inline-block;font-size:12px;color:var(--sap);text-decoration:none;margin-bottom:20px}
-.det{display:flex;gap:34px;flex-wrap:wrap}
-.det .cov{width:210px;flex:none;margin:0 auto}
-.det h2{font:700 clamp(32px,6vw,48px)/1.05 'Cormorant Garamond',serif}
-.meta{font-size:12.5px;color:var(--sap);margin:8px 0 12px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.chips span{font-size:11.5px;padding:3px 11px;border-radius:99px;background:rgba(90,79,207,.12);color:var(--iris)}
-.syn{font-size:14px;line-height:1.85;white-space:pre-line;opacity:.88;max-width:62ch}
-.toc{margin-top:34px}
-.toc h4{font:italic 600 28px 'Cormorant Garamond',serif;color:var(--iris);margin-bottom:6px}
-.toc button{display:flex;align-items:baseline;gap:12px;width:100%;background:none;border:0;border-bottom:1px dashed var(--line);padding:11px 4px;cursor:pointer;color:var(--ink);text-align:left;font:500 14px 'Be Vietnam Pro',sans-serif;transition:.2s}
+.tag{position:absolute;top:12px;right:0;background:var(--iris);color:#fff;font-size:10.5px;padding:3px 10px 3px 12px;border-radius:99px 0 0 99px;z-index:3}
+.finale{position:relative;text-align:center;padding:clamp(120px,24vh,260px) 20px 170px;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,var(--glow),transparent 65%)}
+.finale-img{background-image:url(https://i.ibb.co/FLjGJ6ms/Chat-GPT-Image-22-30-24-24-thg-9-2026.png);opacity:.3}
+.finale>*{position:relative}
+.finale h2{font:italic 600 clamp(52px,11vw,130px)/.95 'Cormorant Garamond',serif}
+.finale p{max-width:42ch;margin:22px auto 30px;color:var(--lav);font-size:14.5px;line-height:1.9}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:6px 22px 6px 22px;padding:clamp(18px,4vw,44px)}
+.back{display:inline-block;font-size:12px;color:var(--iris);text-decoration:none;margin-bottom:22px}
+.det{display:flex;gap:36px;flex-wrap:wrap}
+.det .cov{width:220px;flex:none;margin:0 auto}
+.det h2{font:italic 600 clamp(40px,7vw,68px)/1 'Cormorant Garamond',serif}
+.meta{font-size:13px;color:var(--iris);margin:10px 0 14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chips span{font-size:11.5px;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:var(--lav)}
+.syn{font-size:14px;line-height:1.9;white-space:pre-line;color:var(--lav);max-width:62ch}
+.toc{margin-top:36px}
+.toc h4{font:italic 600 30px 'Cormorant Garamond',serif;margin-bottom:6px}
+.toc button{display:flex;align-items:baseline;gap:14px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:13px 4px;cursor:pointer;color:var(--ink);text-align:left;font:500 14px 'Be Vietnam Pro',sans-serif;transition:.25s}
 .toc button:hover{color:var(--iris);padding-left:12px}
-.toc i{flex:none;min-width:40px;font:italic 600 19px 'Cormorant Garamond',serif;color:var(--gold)}
+.toc i{flex:none;min-width:40px;font:italic 600 20px 'Cormorant Garamond',serif;color:var(--iris)}
 .reader{max-width:720px;margin-left:auto;margin-right:auto}
-.rtool{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:28px;border-bottom:1px solid var(--line)}
-.rhead{text-align:center;margin-bottom:34px}
-.rhead small{font:italic 600 18px 'Cormorant Garamond',serif;color:var(--gold)}
-.rhead h2{font:700 clamp(30px,6vw,42px)/1.1 'Cormorant Garamond',serif}
+.rtool{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:30px;border-bottom:1px solid var(--line)}
+.rhead{text-align:center;margin-bottom:38px}
+.rhead small{font:italic 600 18px 'Cormorant Garamond',serif;color:var(--iris)}
+.rhead h2{font:italic 600 clamp(34px,6vw,50px)/1.1 'Cormorant Garamond',serif}
 #rt{font-family:'Lora',serif;line-height:2}
 #rt p{margin-bottom:1.1em;text-indent:1.6em}
 #rt p:first-child{text-indent:0}
-#rt p:first-child:first-letter{float:left;font:700 4.3em/.8 'Cormorant Garamond',serif;color:var(--iris);padding:6px 10px 0 0}
-.emo{margin-top:36px;padding-top:22px;border-top:1px solid var(--line);text-align:center}
+#rt p:first-child:first-letter{float:left;font:italic 600 4.4em/.8 'Cormorant Garamond',serif;color:var(--iris);padding:6px 10px 0 0}
+.emo{margin-top:38px;padding-top:22px;border-top:1px solid var(--line);text-align:center}
 .emo p{font-size:12px;color:var(--lav);margin-bottom:12px}
 .emo div{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.emo button{display:flex;flex-direction:column;align-items:center;gap:2px;width:84px;padding:10px 4px;border-radius:14px;border:1px dashed var(--line);background:transparent;color:var(--ink);cursor:pointer;font:500 12px 'Be Vietnam Pro',sans-serif}
+.emo button{display:flex;flex-direction:column;align-items:center;gap:2px;width:84px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font:500 12px 'Be Vietnam Pro',sans-serif}
 .emo button b{font-size:20px;color:var(--iris)}
-.emo button.on{border:2px solid var(--gold);background:rgba(184,145,63,.12);transform:rotate(-3deg)}
+.emo button.on{border-color:var(--iris);background:var(--glow)}
 .rnav{margin-top:26px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--iris),var(--gold));z-index:60}
-footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12px;color:var(--lav)}
-footer b{display:block;font:italic 600 22px 'Cormorant Garamond',serif;color:var(--iris)}
+.prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--iris);z-index:60}
+footer{border-top:1px solid var(--line);padding:30px 0 90px;text-align:center;font-size:12px;line-height:1.9;color:var(--lav)}
+footer b{display:block;font:italic 600 24px 'Cormorant Garamond',serif;color:var(--ink)}
+.sw{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:16px;padding:9px 18px;border-radius:99px;background:color-mix(in srgb,var(--card) 72%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line)}
+.sw div{display:flex;gap:10px}
+.sw button{width:22px;height:22px;padding:0;border-radius:50%;border:2px solid transparent;background:var(--c);cursor:pointer;box-shadow:0 0 0 1px var(--line);transition:transform .25s}
+.sw button[aria-pressed=true]{border-color:var(--ink);transform:scale(1.18)}
+@media(max-width:560px){.sw .caps{display:none}}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end;border-bottom:2px solid var(--iris)}
+.tab{padding:9px 18px;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:transparent;color:var(--lav);font:500 13px 'Be Vietnam Pro',sans-serif;cursor:pointer}
+.tab.on{background:var(--iris);color:#fff}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv,.hero-copy>*{opacity:1;transform:none}}
 .modal{position:fixed;inset:0;z-index:70;background:rgba(24,23,41,.62);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}
 .box{background:var(--card);border:1px solid var(--line);border-radius:6px 22px 6px 22px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:26px}
 .box.sm{max-width:380px;text-align:center}
@@ -106,6 +137,51 @@ footer b{display:block;font:italic 600 22px 'Cormorant Garamond',serif;color:var
 .qr img{width:100%;height:100%;object-fit:contain}
 @media(max-width:560px){.g2{grid-template-columns:1fr}.tabs select{margin:6px 0 6px auto}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== REDESIGN: Đêm sao Fleur-de-Lys ===== */
+:root{--disp:'Bodoni Moda','Cormorant Garamond',serif;--ease:cubic-bezier(.2,.7,.2,1)}
+body{background-image:radial-gradient(circle at 12% 8%,var(--glow),transparent 38%),radial-gradient(circle at 92% 60%,rgba(184,145,63,.12),transparent 34%)}
+body:after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.top{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 70%,transparent)}
+.brand b,.hero h1,.hero-lede,.cap h3,.det h2,.rhead h2,.finale h2,.pause p{font-family:var(--disp)}
+.btn{position:relative;overflow:hidden;z-index:0}
+.btn:not(.fill):before{content:"";position:absolute;inset:0;z-index:-1;background:var(--iris);transform:translateY(101%);transition:transform .35s var(--ease)}
+.btn:not(.fill):hover{color:#fff}.btn:not(.fill):hover:before{transform:none}
+.hero{background:radial-gradient(500px circle at var(--mx,70%) var(--my,30%),var(--glow),transparent 70%),var(--paper)}
+.hero-img{inset:auto -4% -6% auto;left:auto;top:auto;width:min(62vw,640px);height:min(80vh,760px);background-size:contain;background-position:bottom right;opacity:.95;mix-blend-mode:multiply;filter:drop-shadow(0 30px 40px var(--glow));animation:sway 9s ease-in-out infinite alternate;transform-origin:50% 100%}
+@keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2.5deg) scale(1.03)}}
+.hero:after{background:linear-gradient(180deg,transparent 60%,var(--paper))}
+.hero h1{font-weight:900;font-size:clamp(76px,19vw,250px);line-height:.8;letter-spacing:-.045em;margin:10px 0 26px -.04em;background:linear-gradient(100deg,var(--ink) 15%,var(--iris) 55%,var(--gold) 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-lede{font-size:clamp(20px,2.6vw,30px);max-width:none;padding-left:22px;border-left:3px solid var(--gold)}
+.hero-copy{z-index:3}
+.hero .caps{display:inline-block;padding:5px 14px;border:1px solid var(--gold);border-radius:99px;color:var(--gold);transform:rotate(-2deg)}
+.mq{overflow:hidden;background:var(--ink);color:var(--paper);transform:rotate(-1.2deg);margin:-34px -20px 56px;padding:14px 0;position:relative;z-index:5;box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.mq div{display:flex;width:max-content;animation:mq 38s linear infinite;font:italic 600 clamp(20px,3vw,30px) var(--disp)}
+.mq span{padding:0 28px;white-space:nowrap}.mq span:nth-child(even){color:var(--gold)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.scene{gap:clamp(36px,8vw,120px)}
+.scene figure{position:relative;transform:rotate(-3.5deg);transition:transform .5s var(--ease)}
+.scene:nth-child(even) figure{transform:rotate(3deg)}
+.scene figure:hover{transform:rotate(0) scale(1.04)}
+.scene figure:before{content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;margin-left:-42px;z-index:6;background:repeating-linear-gradient(90deg,rgba(184,145,63,.6) 0 8px,rgba(255,255,255,.45) 8px 16px);transform:rotate(-5deg);box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.scene:nth-child(even) figure:before{background:repeating-linear-gradient(90deg,rgba(90,79,207,.5) 0 8px,rgba(255,255,255,.45) 8px 16px);transform:rotate(6deg)}
+figure:hover .cov{transform:none}
+.cov{border-radius:2px;box-shadow:14px 14px 0 -2px var(--card),14px 14px 0 -1px var(--iris),0 34px 50px -14px var(--glow)}
+.cap{position:relative;padding:26px 28px;background:var(--card);border:1px solid var(--line);border-radius:4px 30px 4px 30px}
+.cap h3{font-weight:700;font-size:clamp(34px,5vw,58px);line-height:1.02}
+.blurb{-webkit-line-clamp:5}
+.cats{position:sticky;top:64px;z-index:20;padding-top:10px;padding-bottom:10px;background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(8px)}
+.cat{padding:7px 16px;border:1px solid transparent;border-radius:99px;transition:.25s}
+.cat.on{background:var(--iris);color:#fff;border-color:var(--iris)}
+.pause{background:var(--ink);color:var(--paper);position:relative;overflow:hidden}
+.pause:before{content:"\201C";position:absolute;left:4%;top:-8%;font:italic 900 clamp(200px,40vw,480px)/1 var(--disp);color:var(--gold);opacity:.18}
+.pause p{position:relative;max-width:22ch}
+.finale h2{font-weight:900;background:linear-gradient(100deg,var(--ink),var(--iris) 60%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.panel{border-radius:4px 40px 4px 40px;box-shadow:12px 12px 0 -2px var(--card),12px 12px 0 -1px var(--line)}
+.toc button{border-radius:10px;border-bottom-color:transparent;margin-bottom:2px}
+.toc button:hover{background:var(--glow);padding-left:18px}
+.sw{box-shadow:0 10px 30px rgba(0,0,0,.18)}
+@media(max-width:700px){.hero-img{width:92vw;opacity:.55}.cap{padding:20px}}
 </style>
 </head>
 <body>
@@ -119,29 +195,159 @@ footer b{display:block;font:italic 600 22px 'Cormorant Garamond',serif;color:var
     <button class="btn fill" id="btnEd" onclick="toggle('editorModal',1)">Chế độ Editor</button>
   </div>
 </div></header>
+<main>
+  <div id="vHome">
+    <section class="hero">
+      <div class="hero-img"></div>
+      <div class="hero-copy"><p class="caps">Fleur-de-Lys</p><h1>l'amante</h1><p class="hero-lede">Amour sans fin</p></div>
+      <div class="strip"><span class="caps">Cuộn để vào</span><span class="caps">Coin lecture au bord de la fenêtre</span><span class="caps">Dịch phi thương mại</span></div>
+    </section>
+    <div class="mq" aria-hidden="true"><div><span>Fleur-de-Lys</span><span>⚜</span><span>Amour sans fin</span><span>⚜</span><span>Dịch phi thương mại</span><span>⚜</span><span>Coin lecture au bord de la fenêtre</span><span>⚜</span><span>Chung thủy một đời</span><span>⚜</span><span>Fleur-de-Lys</span><span>⚜</span><span>Amour sans fin</span><span>⚜</span><span>Dịch phi thương mại</span><span>⚜</span><span>Coin lecture au bord de la fenêtre</span><span>⚜</span><span>Chung thủy một đời</span><span>⚜</span></div></div>
+    <div style="max-width:1024px;margin:0 auto;border-radius:20px;color:#2E2540;position:relative;overflow:hidden">
+  <div style="background:linear-gradient(160deg,#4B3B8C 0%,#3A2E6E 55%,#241A42 100%)">
+    <div style="position:absolute;top:14px;left:10px;width:56px;height:56px;border:1.5px solid transparent;border-top-color:#F2C94C;border-right-color:#F2C94C;border-radius:50%;transform:rotate(-30deg);opacity:.7"></div>
+    <div style="position:absolute;top:26px;left:26px;width:32px;height:32px;border:1.5px solid transparent;border-top-color:#B9A6D9;border-left-color:#B9A6D9;border-radius:50%;transform:rotate(200deg);opacity:.6"></div>
+    <div style="position:absolute;top:20px;left:64px;width:5px;height:5px;background:#F2C94C;border-radius:50%;opacity:.8"></div>
+    <div style="position:absolute;top:14px;right:10px;width:56px;height:56px;border:1.5px solid transparent;border-top-color:#F2C94C;border-left-color:#F2C94C;border-radius:50%;transform:rotate(30deg);opacity:.7"></div>
+    <div style="position:absolute;top:26px;right:26px;width:32px;height:32px;border:1.5px solid transparent;border-top-color:#B9A6D9;border-right-color:#B9A6D9;border-radius:50%;transform:rotate(160deg);opacity:.6"></div>
+    <div style="position:absolute;top:20px;right:64px;width:5px;height:5px;background:#F2C94C;border-radius:50%;opacity:.8"></div>
 
-<main class="wrap">
-  <section id="vHome">
-    <div class="hero">
-      <div class="win"><small>Fleur-de-Lys · est. 2024</small><h2>l'amante</h2><p class="fr">Coin lecture au bord de la fenêtre</p></div>
-      <blockquote>Aimer, c'est se donner corps et âme.<cite>Alfred de Musset</cite></blockquote>
-      <div class="orn">⚜</div>
-      <p>Truyện lãng mạn, đời thường, thực tế, quan trọng nhất là chung thủy. Mời các nàng diên vĩ xanh ghé ngồi bên cửa sổ.</p>
+  <div style="padding:clamp(46px,8vw,70px) clamp(20px,5vw,40px) 60px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:24px;left:12%;width:3px;height:3px;background:#ffe9a8;border-radius:50%;box-shadow:0 0 8px 2px #ffe9a8"></div>
+    <div style="position:absolute;top:52px;left:6%;width:2px;height:2px;background:#e6d9ff;border-radius:50%;box-shadow:0 0 6px 2px #e6d9ff"></div>
+    <div style="position:absolute;top:38px;right:9%;width:4px;height:4px;background:#ffe9a8;border-radius:50%;box-shadow:0 0 10px 3px #ffe9a8"></div>
+    <div style="position:absolute;bottom:70px;left:18%;width:3px;height:3px;background:#e6d9ff;border-radius:50%;box-shadow:0 0 7px 2px #e6d9ff"></div>
+    <div style="position:absolute;bottom:100px;right:20%;width:2px;height:2px;background:#ffe9a8;border-radius:50%;box-shadow:0 0 6px 2px #ffe9a8"></div>
+    <div style="position:absolute;top:66px;left:28px;width:58px;height:58px;border:1.5px solid #F2C94C;border-radius:50%;transform:rotate(-8deg);display:flex;align-items:center;justify-content:center;opacity:.85">
+      <span style="font-style:italic;color:#F2C94C;font-size:17px;letter-spacing:1px">F·L</span>
     </div>
-    <div class="tabs" id="tabs"></div>
-    <div class="shelf" id="shelf"></div>
-  </section>
-  <section id="vDetail" class="panel hide"></section>
-  <section id="vRead" class="panel reader hide">
+    <div style="position:absolute;top:70px;right:26px;font-size:11px;letter-spacing:2px;color:#C9C2E8;transform:rotate(6deg);border:1px dashed #6f5aa8;padding:4px 9px;border-radius:3px">EST. 2024</div>
+    <img src="https://i.ibb.co/BKrHwM7P/Chat-GPT-Image-22-16-23-24-thg-9-2026.png" alt="Hoa Iris" style="width:clamp(130px,20vw,180px);height:auto;display:block;margin:18px auto 4px">
+    <h1 style="text-align:center;font-style:italic;color:#F4F0E6;font-size:clamp(34px,7vw,52px);margin:6px 0 0;font-weight:500;letter-spacing:.5px">Fleur-de-Lys</h1>
+    <p style="text-align:center;color:#C9C2E8;letter-spacing:1.5px;font-size:16px;margin:10px 0 0">Coin lecture au bord de la fenêtre</p>
+  </div>
+
+  <div style="max-width:480px;margin:-34px auto 0;position:relative;z-index:2;transform:rotate(-1.6deg);padding:0 20px">
+    <div style="height:13px;background:linear-gradient(135deg,transparent 7px,#F4F0E6 7px) 0 0/14px 14px repeat-x,linear-gradient(-135deg,transparent 7px,#F4F0E6 7px) 7px 0/14px 14px repeat-x"></div>
+    <div style="background:#F4F0E6;padding:22px 26px 10px;box-shadow:0 14px 30px rgba(0,0,0,.28)">
+      <p style="font-style:italic;color:#5B4C87;font-size:18px;line-height:1.55;margin:0">
+        <span style="float:left;font-size:56px;line-height:38px;padding:2px 8px 0 2px;color:#4B3B8C">A</span>imer, c'est se donner corps et âme.
+      </p>
+      <div style="clear:both"></div>
+      <div style="text-align:right;font-size:11px;color:#7A7060;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;padding:6px 0 14px">Alfred de Musset</div>
+    </div>
+    <div style="height:13px;background: linear-gradient(45deg,transparent 7px,#F4F0E6 7px) 0 0/14px 14px repeat-x,linear-gradient(-45deg,transparent 7px,#F4F0E6 7px) 7px 0/14px 14px repeat-x"></div>
+  </div>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:6px;margin:40px 0 36px">
+    <div style="width:14px;height:14px;background:#B9A6D9;border-radius:0 100% 0 100%;transform:rotate(-20deg)"></div>
+    <div style="width:10px;height:10px;background:#F2C94C;border-radius:50%"></div>
+    <div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid #6A4C9C;transform:rotate(15deg)"></div>
+    <div style="width:16px;height:12px;background:#C9C2E8;border-radius:50% 50% 0 0;position:relative;margin:0 2px">
+      <div style="position:absolute;top:0;left:0;width:8px;height:8px;background:#B9A6D9;border-radius:0 100% 0 0"></div>
+      <div style="position:absolute;top:0;right:0;width:8px;height:8px;background:#B9A6D9;border-radius:100% 0 0 0"></div>
+    </div>
+    <div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid #6A4C9C;transform:rotate(-15deg)"></div>
+    <div style="width:10px;height:10px;background:#F2C94C;border-radius:50%"></div>
+    <div style="width:14px;height:14px;background:#B9A6D9;border-radius:100% 0 100% 0;transform:rotate(20deg)"></div>
+  </div>
+
+  <div style="background:#F4F0E6;padding:clamp(30px,6vw,48px) clamp(20px,5vw,38px);margin:26px 20px;border-radius:4px;box-shadow:0 10px 26px rgba(0,0,0,.14);display:flex;gap:32px;flex-wrap:wrap;align-items:center">
+    <div style="position:relative;width:150px;flex:0 0 150px;margin:0 auto">
+      <div style="position:absolute;top:-10px;left:14px;width:44px;height:18px;background:rgba(242,201,76,.55);transform:rotate(-14deg);box-shadow:0 2px 4px rgba(0,0,0,.15)"></div>
+      <div style="position:absolute;bottom:-8px;right:8px;width:44px;height:18px;background:rgba(185,166,217,.65);transform:rotate(10deg);box-shadow:0 2px 4px rgba(0,0,0,.15)"></div>
+      <img src="https://i.ibb.co/yns2bPCZ/ava-di-n-v.png" alt="Author Avatar" style="width:150px;height:auto;display:block;transform:rotate(-2.5deg);box-shadow:0 10px 22px rgba(0,0,0,.25);position:relative;z-index:1">
+    </div>
+    <div style="flex:1;min-width:240px">
+      <h2 style="font-style:italic;color:#6A4C9C;font-size:26px;margin:0 0 3px">Fleur-de-Lys</h2>
+      <p style="font-size:12.5px;color:#7A7060;letter-spacing:1.5px;margin:0 0 16px">GỌI MÌNH LÀ IRIS</p>
+      <ul style="padding:0;margin:0;list-style:none">
+        <li style="margin-bottom:9px;padding-left:20px;position:relative;font-size:15px;line-height:1.55"><span style="position:absolute;left:0;color:#6A4C9C">✦</span> Tuổi mới vượt ngưỡng 30 hai năm, sống chậm, thích yên tĩnh và bướng bỉnh khi đã thích điều gì đó.</li>
+        <li style="margin-bottom:9px;padding-left:20px;position:relative;font-size:15px;line-height:1.55"><span style="position:absolute;left:0;color:#6A4C9C">✦</span> Gu truyện lãng mạn, đời thường, thực tế, quan trọng nhất là chung thủy.</li>
+        <li style="padding-left:20px;position:relative;font-size:15px;line-height:1.55"><span style="position:absolute;left:0;color:#6A4C9C">✦</span> Góc nhỏ tự thiết kế với sự hỗ trợ gõ mã từ trí tuệ nhân tạo.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:#EFE9DA;border:1px dashed #B9A6D9;border-radius:3px;padding:22px 24px;margin:18px 20px 0;transform:rotate(.6deg)">
+    <p style="font-style:italic;color:#6A4C9C;font-weight:bold;margin:0 0 10px;font-size:16px">✎ Ý nghĩa tên nhà</p>
+    <p style="font-size:14px;line-height:1.65;color:#4A4438;margin:0 0 8px">"Amante" nghĩa là người yêu dấu trong tiếng Ý/Tây Ban Nha, còn "1314" là trọn đời trọn kiếp trong văn hóa mạng Trung Quốc — tình yêu và sự vĩnh cửu.</p>
+    <p style="font-size:14px;line-height:1.65;color:#4A4438;margin:0">Ngay cả "Amour sans fin" cũng khớp với ý nghĩa ấy: đắm say, nhiệt thành và cá tính. Tất cả bắt nguồn từ truyện "Miltonduff" của Na Thù.</p>
+  </div>
+
+  <div style="display:flex;gap:16px;margin:24px 20px 0;flex-wrap:wrap;align-items:flex-start">
+    <div style="flex:1;min-width:180px;background:#F4F0E6;border-radius:4px 4px 4px 26px;padding:20px 22px;box-shadow:0 8px 20px rgba(0,0,0,.16)">
+      <h4 style="font-style:italic;color:#6A4C9C;margin:0 0 12px;font-size:16px">Chỉ đăng tại</h4>
+      <span style="display:inline-block;background:#4B3B8C;color:#F4F0E6;padding:6px 16px;border-radius:16px;font-size:13px">WordPress</span>
+    </div>
+    <div style="flex:1;min-width:180px;background:#F4F0E6;border-radius:4px 4px 26px 4px;padding:20px 22px;margin-top:22px;box-shadow:0 8px 20px rgba(0,0,0,.16)">
+      <h4 style="font-style:italic;color:#6A4C9C;margin:0 0 10px;font-size:16px">Gu chủ nhà</h4>
+      <p style="font-size:14px;margin:0;color:#4A4438;line-height:1.55">Lãng mạn, đời thường, thực tế — quan trọng nhất là chung thủy.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:stretch;margin:24px 20px 0">
+    <div style="width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:14px solid #4B3B8C"></div>
+    <div style="flex:1;background:#4B3B8C;padding:12px 18px;display:flex;align-items:center">
+      <p style="font-size:13.5px;line-height:1.55;color:#F4F0E6;margin:0">Chủ nhà không nhận góp ý xưng hô, văn phong cũng như cách đặt mật khẩu. Hoan nghênh góp ý lỗi sai chính tả và lỗi gõ máy!</p>
+    </div>
+    <div style="width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:14px solid #4B3B8C"></div>
+  </div>
+
+  <div style="max-width:600px;background:radial-gradient(ellipse at 50% 15%,#241A42,#0F0B1E);border-radius:20px;padding:clamp(30px,6vw,42px) clamp(18px,5vw,26px);margin:26px 20px 0;position:relative;overflow:hidden">
+    <div style="position:absolute;top:18px;left:10%;width:2px;height:2px;background:#F4F0E6;border-radius:50%;box-shadow:0 0 4px 1px #F4F0E6"></div>
+    <div style="position:absolute;top:44px;right:14%;width:3px;height:3px;background:#F2C94C;border-radius:50%;box-shadow:0 0 6px 1px #F2C94C"></div>
+    <div style="position:absolute;bottom:26px;left:22%;width:2px;height:2px;background:#F4F0E6;border-radius:50%;box-shadow:0 0 4px 1px #F4F0E6"></div>
+    <div style="position:absolute;bottom:40px;right:8%;width:3px;height:3px;background:#F2C94C;border-radius:50%;box-shadow:0 0 6px 1px #F2C94C"></div>
+    <h3 style="text-align:center;letter-spacing:3px;color:#F2C94C;font-size:15px;margin:0 0 26px">DEAR READERS</h3>
+    <div style="width:200px;margin:0 auto;position:relative">
+      <div style="height:12px;background:linear-gradient(135deg,transparent 6px,#F4F0E6 6px) 0 0/12px 12px repeat-x,linear-gradient(-135deg,transparent 6px,#F4F0E6 6px) 6px 0/12px 12px repeat-x"></div>
+      <div style="width:200px;height:104px;background:#F4F0E6;position:relative;box-shadow:0 12px 26px rgba(0,0,0,.5)">
+        <div style="position:absolute;top:0;left:0;width:0;height:0;border-left:100px solid transparent;border-right:100px solid transparent;border-top:50px solid #DCD3EF"></div>
+        <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:30px;height:30px;background:radial-gradient(circle at 35% 30%,#93495A,#6F2E3D);border-radius:52% 48% 55% 45%;box-shadow:0 3px 8px rgba(0,0,0,.45)">
+          <span style="position:absolute;display:flex;align-items:center;justify-content:center;color:#e8c9ce;font-size:10px;font-style:italic">L</span>
+        </div>
+        <div style="position:absolute;top:44px;left:calc(50% - 14px);width:6px;height:6px;background:#6F2E3D;border-radius:60% 40% 50% 50%"></div>
+        <div style="position:absolute;bottom:12px;width:100%;text-align:center;font-size:12px;color:#6A4C9C;font-style:italic">L'amante</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:22px;margin-top:30px;flex-wrap:wrap">
+      <div style="background:#F4F0E6;border:2px dashed #B9A6D9;padding:10px 14px;transform:rotate(-4deg);text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.3)">
+        <div style="font-size:10px;letter-spacing:1px;color:#7A7060;margin-bottom:4px">FACEBOOK</div>
+        <a href="https://www.facebook.com/Lamante1314/" target="_blank" rel="noopener" style="text-decoration:none;color:#4B3B8C;font-style:italic;font-size:13px">L'amante</a>
+      </div>
+      <div style="background:#F4F0E6;border:2px dashed #B9A6D9;padding:10px 14px;transform:rotate(3deg);text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.3)">
+        <div style="font-size:10px;letter-spacing:1px;color:#7A7060;margin-bottom:4px">GMAIL</div>
+        <a href="mailto:lamante1508@gmail.com" style="text-decoration:none;color:#4B3B8C;font-style:italic;font-size:13px">lamante1314</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin:34px 0 0 auto;max-width:300px;transform:rotate(-1deg)">
+    <img src="https://i.ibb.co/FLjGJ6ms/Chat-GPT-Image-22-30-24-24-thg-9-2026.png" alt="Giỏ hoa Iris" style="width:100%;height:auto;display:block">
+  </div>
+
+  <p style="text-align:center;color:#6A4C9C;font-style:italic;margin:30px 0 14px;font-size:14px">L'amante — Amour sans fin</p>
+  <div style="text-align:center;padding-bottom:44px">
+    <span style="display:inline-block;background:#F2C94C;color:#4B3B8C;padding:9px 22px;border-radius:3px;font-weight:bold;letter-spacing:.5px;transform:rotate(-1deg);box-shadow:0 4px 10px rgba(0,0,0,.2)">amante1314.wordpress.com</span>
+  </div>
+ </div>
+</div>
+    <section class="lib"><div class="cats" id="tabs"></div><div id="shelf"></div></section>
+    <section class="pause"><p class="rv">Aimer, c'est se donner corps et âme.</p></section>
+    <section class="finale"><div class="finale-img"></div><h2 class="rv">Mời bạn ngồi xuống.</h2><p class="rv">Một trang giấy chưa kể hết được một cuốn truyện. Hãy chọn một bìa sách, hoặc để quẻ chọn thay bạn.</p><button class="btn fill rv" onclick="pickRandom()">Gieo quẻ một cuốn</button></section>
+  </div>
+  <section id="vDetail" class="hide"><div class="wrap pt"><div class="panel" id="dBody"></div></div></section>
+  <section id="vRead" class="hide"><div class="wrap pt"><div class="panel reader">
     <div class="rtool">
       <a class="back" id="rBack" href="#/" style="margin:0">← Mục lục</a>
-      <div><button class="btn" onclick="fontSize(-1)">A-</button> <button class="btn" onclick="fontSize(1)">A+</button></div>
+      <div><button class="btn" onclick="fontSize(-1)">A-</button> <button class="btn" onclick="fontSize(1)">A+</button> <button class="btn" onclick="document.body.classList.toggle('paper')">Nền giấy</button></div>
     </div>
     <div id="rb"></div>
-  </section>
+  </div></div></section>
 </main>
-
-<footer><div class="wrap"><b>L'amante, Amour sans fin</b>Bản dịch phi thương mại, phục vụ sở thích cá nhân. Vui lòng không re-up.<br>Chủ nhà không nhận góp ý xưng hô và văn phong. Hoan nghênh góp ý lỗi chính tả và lỗi gõ máy!<br><a href="https://www.facebook.com/Lamante1314/" target="_blank" rel="noopener" style="color:var(--sap)">Facebook L'amante</a></div></footer>
+<footer><div class="wrap"><b>L'amante, Amour sans fin</b>Bản dịch phi thương mại, phục vụ sở thích cá nhân. Vui lòng không re-up.<br>Chủ nhà không nhận góp ý xưng hô và văn phong. Hoan nghênh góp ý lỗi chính tả và lỗi gõ máy!<br><a href="https://www.facebook.com/Lamante1314/" target="_blank" rel="noopener" style="color:var(--iris)">Facebook L'amante</a></div></footer>
+<nav class="sw" aria-label="Chọn sắc hoa"><p class="caps">Chọn sắc hoa</p><div id="swBtns"></div></nav>
 
 <div id="donateModal" class="modal hide"><div class="box sm">
   <div class="mh"><h3>Gửi trà cho l'amante</h3><button class="x" onclick="toggle('donateModal',0)" aria-label="Đóng">✕</button></div>
@@ -197,20 +403,22 @@ const sb=supabase.createClient("https://edvxevaqtrsdxlmonyyb.supabase.co","sb_pu
 const DONATE_QR_URL=""; // dán link ảnh mã QR vào đây
 const CATS=["Rực rỡ","Chúm chím","E ấp","Truyện ngắn","Sưu tầm"];
 const EMO=[["heart","♡","Tan chảy"],["flutter","✦","Xao xuyến"],["ache","◈","Nghẹn ngào"],["cozy","☕","Nhẹ nhàng"]];
-const THEMES=[["","Nền sáng"],["sepia","Nền giấy"],["night","Nền đêm"]];
+const CW=[["iris","Iris","#8F86FF"],["sapphire","Sapphire","#6E9BFF"],["crimson","Đỏ thẫm","#FF5566"],["sage","Sage","#9CC5A1"],["gold","Vàng đồng","#E2B964"]];
+const io="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.15}):null;
+function watch(){document.querySelectorAll(".rv:not(.in)").forEach(el=>io?io.observe(el):el.classList.add("in"))}
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let S=[],cat="ALL",st="ALL",fs=18,th=+localStorage.getItem("lm_theme")||0,prev=null,next=null,eCh=[];
+let S=[],cat="ALL",st="ALL",fs=18,prev=null,next=null,eCh=[];
 
 const toggle=(id,on)=>$(id).classList.toggle("hide",!on);
 const show=v=>["Home","Detail","Read"].forEach(n=>$("v"+n).classList.toggle("hide",n!==v));
-function applyTheme(){document.body.className=THEMES[th][0];$("btnTheme").textContent=THEMES[th][1]}
-function cycleTheme(){th=(th+1)%3;localStorage.setItem("lm_theme",th);applyTheme()}
+function applyColorway(s){if(!CW.some(c=>c[0]===s))s="iris";document.documentElement.setAttribute("data-colorway",s);try{localStorage.setItem("lm_colorway",s)}catch(e){}[...$("swBtns").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===s))}
 function fontSize(d){fs=Math.min(26,Math.max(14,fs+d));$("rt")&&($("rt").style.fontSize=fs+"px")}
 function pickRandom(){if(!S.length)return alert("Kệ sách chưa có truyện nào.");location.hash="#/s/"+S[Math.floor(Math.random()*S.length)].id}
 
 async function init(){
-  applyTheme();
+  $("swBtns").innerHTML=CW.map(c=>`<button style="--c:${c[2]}" data-s="${c[0]}" aria-label="${c[1]}" title="${c[1]}" onclick="applyColorway('${c[0]}')"></button>`).join("");
+  applyColorway(document.documentElement.getAttribute("data-colorway"));watch();
   $("qr").innerHTML=DONATE_QR_URL?`<img src="${esc(DONATE_QR_URL)}" alt="Mã QR">`:"Chưa gắn ảnh mã QR. Dán link vào DONATE_QR_URL.";
   $("stCat").innerHTML+=CATS.map(c=>`<option>${c}</option>`).join("");
   await loadStories();route();
@@ -223,13 +431,14 @@ async function loadStories(){
   $("chSel").innerHTML='<option value="">Chọn truyện để làm việc</option>'+S.map(s=>`<option value="${s.id}">${esc(s.title)}</option>`).join("");
 }
 function drawTabs(){
-  $("tabs").innerHTML=["ALL",...CATS].map(c=>`<button class="tab ${c===cat?"on":""}" onclick="cat='${c}';drawTabs();drawShelf()">${c==="ALL"?"Tất cả":c}</button>`).join("")+
+  $("tabs").innerHTML=["ALL",...CATS].map(c=>`<button class="cat ${c===cat?"on":""}" onclick="cat='${c}';drawTabs();drawShelf()">${c==="ALL"?"Tất cả":c}</button>`).join("")+
   `<select onchange="st=this.value;drawShelf()" aria-label="Lọc theo tình trạng">${[["ALL","Mọi tình trạng"],["Đang tiến hành","Đang tiến hành"],["Hoàn thành","Hoàn thành"]].map(o=>`<option value="${o[0]}" ${o[0]===st?"selected":""}>${o[1]}</option>`).join("")}</select>`;
 }
 const cover=(s,tag)=>`<div class="cov">${s.cover_url?`<img src="${esc(s.cover_url)}" alt="" loading="lazy">`:`<div class="nocov"><span>⚜</span>${esc(s.title)}</div>`}${tag?`<span class="tag">${esc(tag)}</span>`:""}</div>`;
 function drawShelf(){
   const l=S.filter(s=>(cat==="ALL"||s.category===cat)&&(st==="ALL"||s.status===st));
-  $("shelf").innerHTML=l.length?l.map(s=>`<button class="book" onclick="location.hash='#/s/${s.id}'">${cover(s,s.status||"Đang tiến hành")}<h3>${esc(s.title)}</h3><small>${esc(s.author||"Đang cập nhật")}</small></button>`).join(""):`<p style="grid-column:1/-1;text-align:center;color:var(--lav);font-size:13px">Ngăn này chưa có truyện nào.</p>`;
+  $("shelf").innerHTML=l.length?l.map(s=>`<article class="scene rv"><figure onclick="location.hash='#/s/${s.id}'">${cover(s)}</figure><div class="cap"><p class="caps">${esc(s.category||"Fleur-de-Lys")}</p><h3>${esc(s.title)}</h3><p class="by">${esc(s.author||"Đang cập nhật")}, ${esc((s.status||"Đang tiến hành").toLowerCase())}</p><p class="blurb">${esc(s.synopsis||"")}</p><button class="btn" onclick="location.hash='#/s/${s.id}'">Mở truyện</button></div></article>`).join(""):`<p class="empty">Ngăn này chưa có truyện nào.</p>`;
+  watch();
 }
 function route(){
   const h=location.hash.split("/");window.scrollTo(0,0);
@@ -242,7 +451,7 @@ async function openStory(id){
   show("Detail");
   const {data:ch}=await sb.from("chapters").select("id,chapter_number,title").eq("story_id",id).order("chapter_number");
   const g=Array.isArray(s.genres)?s.genres:[];
-  $("vDetail").innerHTML=`<a class="back" href="#/">← Về kệ sách</a>
+  $("dBody").innerHTML=`<a class="back" href="#/">← Về kệ sách</a>
   <div class="det">${cover(s)}<div style="flex:1;min-width:240px">
     <h2>${esc(s.title)}</h2>
     <p class="meta">${esc(s.author||"Chưa rõ tác giả")} · edit bởi ${esc(s.editor||"l'amante")} · ${esc(s.status||"")}${s.category?" · "+esc(s.category):""}</p>
@@ -353,6 +562,7 @@ async function delCh(id){
   const {error}=await sb.from("chapters").delete().eq("id",id);if(error)return alert("Lỗi xóa chương: "+error.message);
   loadEdChs($("chSel").value);
 }
+document.querySelector(".hero").addEventListener("pointermove",e=>{const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",(e.clientX-r.left)+"px");e.currentTarget.style.setProperty("--my",(e.clientY-r.top)+"px")});
 init();
 </script>
 </body>
